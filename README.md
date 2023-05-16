@@ -1,0 +1,2 @@
+# untrustworthiness_dehumanization
+four studies exploring how perceptions of untrustworthiness engender dehumanization
