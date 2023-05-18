@@ -283,6 +283,7 @@ s1_participants %>%
                     labels = c('Trustworthy\nTargets',
                                'Untrustworthy\nTargets')) +
   scale_x_discrete(labels = c('Agency Traits', 'Experience Traits')) +
+  scale_y_continuous(breaks = seq(1, 7, 1)) +
   labs(x = '',
        y = 'Mean Rating',
        fill = '') +
