@@ -191,6 +191,7 @@ mod1 <- lmer(rating ~ trust_c * trait_c
              data = s1_main)
 model_summary_lmer(mod1)
 
+
 # explore interaction
 # agency traits
 mod2.1 <- lmer(rating ~ trust_c 
