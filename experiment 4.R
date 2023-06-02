@@ -191,54 +191,42 @@ s4_main <- s4_long %>%
 
 ### LMM analyses ###
 mod1 <- lmer(rating ~ trust_c * val_c * orien_c 
-             + (trust_c|subj) + (1|stimID),
+             + (1|subj) + (1|stimID),
              data = s4_main)
 model_summary_lmer(mod1)
 
+# simple slopes
+ss <- sim_slopes(mod1,
+                 pred = trust_c,
+                 modx = val_c,
+                 mod2 = orien_c)$slopes |> as.data.frame()
 
-# 3-way interaction
-# positive emotions
-mod2.1 <- lmer(rating ~ trust_c * orien_c 
-               + (trust_c|subj) + (0 + trust_c|stimID),
-               data = filter(s4_main, val_c == 1))
-model_summary_lmer(mod2.1)
+# summarize and get effect size estimates (df based on full model)
+# other-oriented emotions
+ss_other_emo <- ss[, 1:7]
+d_other <- t_to_d(t = ss_other_emo$t.val.,
+                  df_error = 7689,
+                  paired = T)
 
+print(
+  cbind(
+    round(ss_other_emo, 3),
+    round(d_other, 3)
+  )
+)
 
-# 2-way interaction
-# positive self-oriented emotions
-mod2.2 <- lmer(rating ~ trust_c 
-               + (trust_c|subj) + (0 + trust_c|stimID),
-               data = filter(s4_main, val_c == 1 & orien_c == 1))
-model_summary_lmer(mod2.2)
+# self-oriented emotions
+ss_self_emo <- ss[, 8:14]
+d_self <- t_to_d(t = ss_self_emo$t.val..1,
+                     df = 7689,
+                     paired = T)
 
-
-# positive other-oriented emotions
-mod2.3 <- lmer(rating ~ trust_c 
-               + (trust_c|subj) + (0 + trust_c|stimID),
-               data = filter(s4_main, val_c == 1 & orien_c == -1))
-model_summary_lmer(mod2.3)
-
-
-# negative emotions
-mod3.1 <- lmer(rating ~ trust_c * orien_c 
-               + (trust_c|subj) + (1|stimID),
-               data = filter(s4_main, val_c == -1))
-model_summary_lmer(mod3.1)
-
-
-# 2-way interaction
-# negative self-oriented emotions
-mod3.2 <- lmer(rating ~ trust_c 
-               + (trust_c|subj) + (0 + trust_c|stimID),
-               data = filter(s4_main, val_c == -1 & orien_c == 1))
-model_summary_lmer(mod3.2)
-
-
-# negative other-oriented emotions
-mod3.3 <- lmer(rating ~ trust_c 
-               + (trust_c|subj) + (0 + trust_c|stimID),
-               data = filter(s4_main, val_c == -1 & orien_c == -1))
-model_summary_lmer(mod3.3)
+print(
+  cbind(
+    round(ss_self_emo, 3),
+    round(d_self, 3)
+  )
+)
 
 
 
@@ -291,7 +279,7 @@ s4_participants %>%
                 alpha = .75,
                 position = position_dodge(.9)) +
   facet_wrap(~ orientation, labeller = labeller(orientation = emo_labs)) +
-  theme_classic() +
+  theme_classic(base_size = 20) +
   scale_fill_manual(values = c(plot_colors[1], plot_colors[2]),
                     labels = c('Trustworthy\nTargets',
                                'Untrustworthy\nTargets')) +
@@ -303,7 +291,7 @@ s4_participants %>%
   theme(legend.position = 'bottom')
 
 
-# ggsave('experiment 4 means.jpg',
-#        device = 'jpeg',
+# ggsave('experiment 4 means.png',
+#        device = 'png',
 #        path = './plots',
 #        units = 'cm')

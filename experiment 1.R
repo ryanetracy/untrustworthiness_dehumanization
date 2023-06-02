@@ -192,18 +192,18 @@ mod1 <- lmer(rating ~ trust_c * trait_c
 model_summary_lmer(mod1)
 
 
-# explore interaction
-# agency traits
-mod2.1 <- lmer(rating ~ trust_c 
-               + (trust_c|subj) + (0 + trust_c|stimID),
-               data = filter(s1_main, trait_c == 1))
-model_summary_lmer(mod2.1)
+# simple slopes
+ss <- sim_slopes(mod1, trust_c, trait_c)$slopes |> as.data.frame()
+d_val <- t_to_d(t = ss$`t val.`,
+                df_error = 3659,
+                paired = T)
 
-# experience traits
-mod2.2 <- lmer(rating ~ trust_c 
-               + (trust_c|subj) + (0 + trust_c|stimID),
-               data = filter(s1_main, trait_c == -1))
-model_summary_lmer(mod2.2)
+print(
+  cbind(
+    round(ss, 3),
+    round(d_val, 3)
+  )
+)
 
 
 
@@ -279,7 +279,7 @@ s1_participants %>%
                 color = plot_colors[3],
                 alpha = .75,
                 position = position_dodge(.9)) +
-  theme_classic() +
+  theme_classic(base_size = 20) +
   scale_fill_manual(values = c(plot_colors[1], plot_colors[2]),
                     labels = c('Trustworthy\nTargets',
                                'Untrustworthy\nTargets')) +
@@ -291,7 +291,7 @@ s1_participants %>%
   theme(legend.position = 'bottom')
   
 
-# ggsave('experiment 1 means.jpg',
-#        device = 'jpeg',
+# ggsave('experiment 1 means.png',
+#        device = 'png',
 #        path = './plots',
 #        units = 'cm')

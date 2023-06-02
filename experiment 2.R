@@ -213,47 +213,38 @@ mod1 <- lmer(rating ~ trust_c * val_c * emo_c
              data = s2_main)
 model_summary_lmer(mod1)
 
+# simple slopes
+ss <- sim_slopes(mod1,
+                 pred = trust_c,
+                 modx = val_c,
+                 mod2 = emo_c)$slopes |> as.data.frame()
 
-# 3-way interaction
-# primary emotions
-mod2.1 <- lmer(rating ~ trust_c * val_c 
-               + (1|subj) + (1|stimID),
-               data = filter(s2_main, emo_c == 1))
-model_summary_lmer(mod2.1)
-
-# 2-way interaction
-# positive-primary
-mod2.2 <- lmer(rating ~ trust_c 
-               + (trust_c|subj) + (1|stimID),
-               data = filter(s2_main, emo_c == 1 & val_c == 1))
-model_summary_lmer(mod2.2)
-
-# negative-primary
-mod2.3 <- lmer(rating ~ trust_c 
-               + (trust_c|subj) + (1|stimID),
-               data = filter(s2_main, emo_c == 1 & val_c == -1))
-model_summary_lmer(mod2.3)
-
-
-
+# summarize and get effect size estimates (df based on full model)
 # secondary emotions
-mod3.1 <- lmer(rating ~ trust_c * val_c 
-               + (trust_c|subj) + (0 + trust_c|stimID),
-               data = filter(s2_main, emo_c == -1))
-model_summary_lmer(mod3.1)
+ss_secondary_emo <- ss[, 1:7]
+d_secondary <- t_to_d(t = ss_secondary_emo$t.val.,
+                      df = 6447,
+                      paired = T)
 
-# 2-way interaction
-# positive-secondary
-mod3.2 <- lmer(rating ~ trust_c 
-               + (trust_c|subj) + (0 + trust_c|stimID),
-               data = filter(s2_main, emo_c == -1 & val_c == 1))
-model_summary_lmer(mod3.2)
+print(
+  cbind(
+    round(ss_secondary_emo, 3),
+    round(d_secondary, 3)
+  )
+)
 
-# negative-secondary
-mod3.3 <- lmer(rating ~ trust_c 
-               + (trust_c|subj) + (0 + trust_c|stimID),
-               data = filter(s2_main, emo_c == -1 & val_c == -1))
-model_summary_lmer(mod3.3)
+# primary emotions
+ss_positive_emo <- ss[, 8:14]
+d_primary <- t_to_d(t = ss_positive_emo$t.val..1,
+                    df = 6447,
+                    paired = T)
+
+print(
+  cbind(
+    round(ss_positive_emo, 3),
+    round(d_primary, 3)
+  )
+)
 
 
 
@@ -303,7 +294,7 @@ s2_participants %>%
                 alpha = .75,
                 position = position_dodge(.9)) +
   facet_wrap(~ emotion, labeller = labeller(emotion = emo_labs)) +
-  theme_classic() +
+  theme_classic(base_size = 20) +
   scale_fill_manual(values = c(plot_colors[1], plot_colors[2]),
                     labels = c('Trustworthy\nTargets',
                                'Untrustworthy\nTargets')) +
@@ -315,7 +306,7 @@ s2_participants %>%
   theme(legend.position = 'bottom')
 
 
-# ggsave('experiment 2 means.jpg',
-#        device = 'jpeg',
+# ggsave('experiment 2 means.png',
+#        device = 'png',
 #        path = './plots',
 #        units = 'cm')
