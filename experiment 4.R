@@ -162,9 +162,9 @@ s4_long$pos_other <- rowMeans(s4_long[,c('compassion', 'gratitude')],
                                      na.rm = T)
 s4_long$pos_self <- rowMeans(s4_long[,c('pride', 'selfSatisfaction')],
                                     na.rm = T)
-s4_long$neg_other <- rowMeans(s4_long[,c('guilt', 'embarrassment')],
+s4_long$neg_other <- rowMeans(s4_long[,c('contempt', 'bitterness')],
                                      na.rm = T)
-s4_long$neg_self <- rowMeans(s4_long[,c('contempt', 'bitterness')],
+s4_long$neg_self <- rowMeans(s4_long[,c('guilt', 'embarrassment')],
                                     na.rm = T)
 
 # reshape with emotion indices
@@ -291,7 +291,7 @@ s4_participants %>%
   theme(legend.position = 'bottom')
 
 
-# ggsave('experiment 4 means.png',
-#        device = 'png',
+# ggsave('experiment 4 means.jpg',
+#        device = 'jpeg',
 #        path = './plots',
 #        units = 'cm')
