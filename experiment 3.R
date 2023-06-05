@@ -341,7 +341,7 @@ s3_participants %>%
   theme(legend.position = 'bottom')
 
 
-# ggsave('experiment 3 means.png',
-#        device = 'png',
+# ggsave('experiment 3 means.jpg',
+#        device = 'jpg',
 #        path = './plots',
 #        units = 'cm')

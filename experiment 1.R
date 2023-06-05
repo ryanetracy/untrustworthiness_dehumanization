@@ -291,7 +291,7 @@ s1_participants %>%
   theme(legend.position = 'bottom')
   
 
-# ggsave('experiment 1 means.png',
-#        device = 'png',
+# ggsave('experiment 1 means.jpg',
+#        device = 'jpeg',
 #        path = './plots',
 #        units = 'cm')
