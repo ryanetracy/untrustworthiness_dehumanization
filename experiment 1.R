@@ -276,7 +276,7 @@ interact_plot(supp_mod,
               legend.main = '',
               modx.labels = c('Experience\nTraits', 'Agency\nTraits'),
               colors = 'blue') +
-  theme_classic() +
+  theme_classic(base_size = 20) +
   labs(x = 'Facial Trustworthiness Ratings',
        y = 'Rating') +
   scale_x_continuous(breaks = seq(1, 7, 1)) +
