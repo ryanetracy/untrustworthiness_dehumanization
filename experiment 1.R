@@ -237,6 +237,56 @@ mod_comp <- lmer(competence ~ trust_c
 model_summary_lmer(mod_comp)
 
 
+## supplementary model with continuous variable of trust
+s1_trust <- s1_long %>%
+  select(subj,
+         face_trust,
+         stimID,
+         trustworthy,
+         warmth,
+         dominant,
+         competence,
+         agency,
+         experience) %>%
+  pivot_longer(cols = agency:experience,
+               names_to = 'trait',
+               values_to = 'rating') %>%
+  mutate(trait_c = if_else(trait == 'agency', 1, -1))
+
+supp_mod <- lmer(rating ~ trustworthy*trait_c + warmth + competence + dominant
+                 + (1|subj) + (1|stimID),
+                 data = s1_trust)
+model_summary_lmer(supp_mod)
+
+# simple slopes for trustworthy x trait interaction
+sim_slopes(supp_mod,
+           pred = 'trustworthy',
+           modx = 'trait_c')$slopes |> as.data.frame()
+
+interact_plot(supp_mod,
+              pred = 'trustworthy',
+              modx = 'trait_c',
+              interval = T,
+              plot.points = T,
+              jitter = c(.15, .15),
+              point.size = .5,
+              point.shape = 4,
+              point.alpha = .2,
+              int.type = 'confidence',
+              legend.main = '',
+              modx.labels = c('Experience\nTraits', 'Agency\nTraits'),
+              colors = 'blue') +
+  theme_classic() +
+  labs(x = 'Facial Trustworthiness Ratings',
+       y = 'Rating') +
+  scale_x_continuous(breaks = seq(1, 7, 1)) +
+  scale_y_continuous(breaks = seq(1, 7, 1)) +
+  theme(legend.position = 'top')
+
+# ggsave('experiment 1 - supplementary analyses.jpg',
+#        device = 'jpeg',
+#        units = 'cm',
+#        path = 'plots')
 
 
 ### plot ###
