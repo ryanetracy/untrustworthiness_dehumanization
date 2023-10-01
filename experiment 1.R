@@ -253,7 +253,10 @@ s1_trust <- s1_long %>%
                values_to = 'rating') %>%
   mutate(trait_c = if_else(trait == 'agency', 1, -1))
 
-supp_mod <- lmer(rating ~ trustworthy*trait_c + warmth + competence + dominant
+supp_mod <- lmer(rating ~ trustworthy*trait_c
+                 + warmth*trait_c
+                 + competence*trait_c
+                 + dominant*trait_c
                  + (1|subj) + (1|stimID),
                  data = s1_trust)
 model_summary_lmer(supp_mod)
